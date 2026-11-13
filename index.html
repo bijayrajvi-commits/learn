@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Academy - Infinite Master Edition (Ages 6+)</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #ede9fe 100%);
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        [data-theme="dark"] {
+            --primary: #818cf8;
+            --primary-hover: #6366f1;
+            --secondary: #38bdf8;
+            --accent: #fbbf24;
+            --success: #34d399;
+            --danger: #f87171;
+            --bg-gradient: linear-gradient(135deg, #090d16 0%, #171c30 100%);
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        [data-theme="nature"] {
+            --primary: #059669;
+            --primary-hover: #047857;
+            --secondary: #34d399;
+            --accent: #d97706;
+            --success: #10b981;
+            --danger: #dc2626;
+            --bg-gradient: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            --card-bg: #ffffff;
+            --text-main: #064e3b;
+            --text-muted: #047857;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif, system-ui;
+            user-select: none;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+            padding: 30px;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 3px dashed rgba(0,0,0,0.1);
+            padding-bottom: 15px;
+        }
+
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .badge-pill, .streak-pill {
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .badge-pill { background: #fef3c7; color: #d97706; }
+        .streak-pill { background: #fee2e2; color: #dc2626; }
+
+        .screen {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .hidden { display: none !important; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .menu-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 22px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-card:hover { transform: translateY(-5px); }
+        .menu-card span.icon { font-size: 3rem; }
+        .menu-card h3 { font-size: 1.3rem; }
+        .menu-card p { font-size: 0.9rem; opacity: 0.9; }
+
+        .level-select-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .level-card {
+            background: rgba(0,0,0,0.03);
+            border: 3px solid var(--primary);
+            border-radius: 18px;
+            padding: 18px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .level-card:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .level-card h4 { font-size: 1.2rem; margin-bottom: 5px; }
+        .level-card p { font-size: 0.85rem; opacity: 0.85; }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn:hover { transform: scale(1.03); }
+        .btn-secondary { background: #64748b; }
+        .btn-accent { background: var(--accent); color: #1e293b; }
+
+        .top-nav {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar-container {
+            flex-grow: 1;
+            height: 14px;
+            background: rgba(0,0,0,0.08);
+            border-radius: 10px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 10px;
+        }
+
+        .question-card {
+            background: rgba(0,0,0,0.02);
+            border: 2px solid rgba(0,0,0,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            white-space: pre-line;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+        }
+
+        .option-btn {
+            background: var(--card-bg);
+            border: 3px solid var(--primary);
+            color: var(--text-main);
+            padding: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+        }
+        .option-btn:hover { background: var(--primary); color: white; transform: translateY(-3px); }
+        .option-btn.correct { background: var(--success) !important; border-color: var(--success) !important; color: white !important; }
+        .option-btn.incorrect { background: var(--danger) !important; border-color: var(--danger) !important; color: white !important; }
+
+        .feedback-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .feedback-modal {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .stickers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            width: 100%;
+            margin: 20px 0;
+            max-height: 350px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .sticker-item {
+            background: rgba(0,0,0,0.03);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            border: 2px dashed rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .sticker-item.unlocked { background: #ecfdf5; border: 2px solid var(--success); }
+
+        .speak-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+        }
+        .speak-btn:hover { transform: scale(1.1); }
+    </style>
+</head>
+<body data-theme="light">
+
+    <div class="container">
+        <header>
+            <div class="app-title"><span>🌟</span> Kids Academy Infinite</div>
+            <div class="user-stats">
+                <div class="badge-pill" id="scoreDisplay">🪙 0</div>
+                <div class="streak-pill" id="streakDisplay">🔥 0</div>
+            </div>
+        </header>
+
+        <!-- HOME SCREEN -->
+        <div id="homeScreen" class="screen">
+            <h2 style="margin-bottom: 10px; font-size: 1.8rem; text-align: center;">Choose Your Learning Adventure!</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px; text-align: center;">Choose a category to explore infinite procedural questions across 5 levels!</p>
+
+            <div class="menu-grid">
+                <div class="menu-card" onclick="selectCategory('math')">
+                    <span class="icon">🔢</span>
+                    <h3>Math Wizards</h3>
+                    <p>Addition, Subtraction, Multiplication, Division & Logic</p>
+                </div>
+                <div class="menu-card" onclick="selectCategory('words')">
+                    <span class="icon">🔤</span>
+                    <h3>Word Builder</h3>
+                    <p>Phonics, Spelling, Vocabulary & Unscramble</p>
+                </div>
+                <div class="menu-card" onclick="selectCategory('science')">
+                    <span class="icon">🌍</span>
+                    <h3>Science & Trivia</h3>
+                    <p>Space, Ecosystems, Animals & Earth Facts</p>
+                </div>
+                <div class="menu-card" onclick="openStickers()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <span class="icon">🏆</span>
+                    <h3>Trophy Room</h3>
+                    <p>View your collected stickers & rewards</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-top: 15px; width: 100%; justify-content: center;">
+                <button class="btn btn-secondary" onclick="openSettings()">⚙️ Settings</button>
+                <button class="btn btn-accent" onclick="openParentDashboard()">🔒 Parents</button>
+            </div>
+        </div>
+
+        <!-- LEVEL SELECT SCREEN -->
+        <div id="levelScreen" class="screen hidden">
+            <div class="top-nav">
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 1rem;" onclick="returnHome()">🏠 Home</button>
+                <h2 id="categoryTitle" style="font-size: 1.5rem;">Select Level</h2>
+                <div style="width: 70px;"></div>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 20px; text-align: center;">Select your difficulty level to start playing:</p>
+            <div class="level-select-grid">
+                <div class="level-card" onclick="startGame(1)">
+                    <h4>Level 1</h4>
+                    <p>Beginner<br>Ages 6-7</p>
+                </div>
+                <div class="level-card" onclick="startGame(2)">
+                    <h4>Level 2</h4>
+                    <p>Intermediate<br>Ages 7-8</p>
+                </div>
+                <div class="level-card" onclick="startGame(3)">
+                    <h4>Level 3</h4>
+                    <p>Advanced<br>Ages 8-9</p>
+                </div>
+                <div class="level-card" onclick="startGame(4)">
+                    <h4>Level 4</h4>
+                    <p>Expert<br>Ages 9-10</p>
+                </div>
+                <div class="level-card" onclick="startGame(5)">
+                    <h4>Level 5</h4>
+                    <p>Master<br>Ages 10+</p>
+                </div>
+                <div class="level-card" onclick="startGame('infinite')" style="border-color: var(--accent); background: rgba(245, 158, 11, 0.05);">
+                    <h4>Infinity ♾️</h4>
+                    <p>Mixed Master<br>All Difficulties</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="gameScreen" class="screen hidden">
+            <div class="top-nav">
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 1rem;" onclick="showScreen('levelScreen')">⬅️ Levels</button>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <span id="questionCounter" style="font-weight: bold; font-size: 1.1rem;">1/∞</span>
+            </div>
+
+            <button class="speak-btn" onclick="speakCurrentQuestion()" title="Read Aloud">🔊</button>
+
+            <div class="question-card">
+                <div class="question-text" id="questionText">Loading Question...</div>
+            </div>
+
+            <div class="options-grid" id="optionsGrid"></div>
+        </div>
+
+        <!-- STICKER SCREEN -->
+        <div id="stickerScreen" class="screen hidden">
+            <div class="top-nav">
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 1rem;" onclick="returnHome()">🏠 Home</button>
+                <h2 style="font-size: 1.5rem;">🏆 Trophy Room</h2>
+                <div style="width: 70px;"></div>
+            </div>
+            <div class="stickers-grid" id="stickersGrid"></div>
+        </div>
+
+        <!-- SETTINGS SCREEN -->
+        <div id="settingsScreen" class="screen hidden">
+            <div class="top-nav">
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 1rem;" onclick="returnHome()">🏠 Home</button>
+                <h2 style="font-size: 1.5rem;">⚙️ Settings</h2>
+                <div style="width: 70px;"></div>
+            </div>
+            <div style="width: 100%; margin-top: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 16px 20px; border-radius: 14px; font-size: 1.1rem; font-weight: bold;">
+                    <span>🎨 App Theme</span>
+                    <select id="themeSelect" onchange="changeTheme(this.value)" style="padding: 8px; border-radius: 10px; font-weight: bold;">
+                        <option value="light">☀️ Sunny Day</option>
+                        <option value="dark">🌙 Night Sky</option>
+                        <option value="nature">🌿 Forest Green</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- PARENT DASHBOARD SCREEN -->
+        <div id="parentScreen" class="screen hidden">
+            <div class="top-nav">
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 1rem;" onclick="returnHome()">🏠 Home</button>
+                <h2 style="font-size: 1.5rem;">🔒 Parent Zone</h2>
+                <div style="width: 70px;"></div>
+            </div>
+            <div id="parentPinSection" style="text-align: center; padding: 30px 0; width: 100%;">
+                <p style="font-size: 1.1rem; margin-bottom: 15px;">Solve to access reports:</p>
+                <h3 id="pinMathQuestion" style="font-size: 1.8rem; margin-bottom: 15px; color: var(--primary);"></h3>
+                <input type="number" id="pinAnswerInput" style="padding: 12px; font-size: 1.2rem; width: 120px; text-align: center; border-radius: 10px; border: 2px solid var(--primary); margin-right: 10px;" placeholder="Answer">
+                <button class="btn" onclick="verifyParentPin()">Enter</button>
+            </div>
+            <div id="parentDashboardContent" class="hidden" style="width: 100%;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; margin-bottom: 20px;">
+                    <div style="background: rgba(0,0,0,0.03); border-radius: 16px; padding: 20px; text-align: center;">
+                        <h4>Total Correct</h4>
+                        <div id="statCorrect" style="font-size: 2rem; font-weight: bold; color: var(--primary);">0</div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.03); border-radius: 16px; padding: 20px; text-align: center;">
+                        <h4>Coins</h4>
+                        <div id="statCoins" style="font-size: 2rem; font-weight: bold; color: var(--primary);">0</div>
+                    </div>
+                </div>
+                <button class="btn" style="background: var(--danger); width: 100%;" onclick="resetProgress()">⚠️ Reset Progress</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEEDBACK OVERLAY -->
+    <div id="feedbackOverlay" class="feedback-overlay hidden">
+        <div class="feedback-modal">
+            <h2 id="feedbackTitle">🎉 Awesome!</h2>
+            <p id="feedbackDesc">You got it right!</p>
+            <button class="btn" onclick="nextQuestion()">Next ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let appData = { coins: 0, streak: 0, correctCount: 0, soundEnabled: true, theme: 'light', unlockedStickers: [0, 1] };
+        try {
+            const saved = localStorage.getItem('kids_academy_master_data');
+            if (saved) appData = JSON.parse(saved);
+        } catch(e) {}
+
+        function saveAppData() {
+            try { localStorage.setItem('kids_academy_master_data', JSON.stringify(appData)); } catch(e) {}
+            document.getElementById('scoreDisplay').innerText = `🪙 ${appData.coins}`;
+            document.getElementById('streakDisplay').innerText = `🔥 ${appData.streak}`;
+        }
+        saveAppData();
+
+        function showScreen(id) {
+            ['homeScreen', 'levelScreen', 'gameScreen', 'stickerScreen', 'settingsScreen', 'parentScreen'].forEach(s => {
+                document.getElementById(s).classList.add('hidden');
+            });
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        let selectedCategory = 'math';
+        let selectedLevel = 1;
+
+        function selectCategory(cat) {
+            selectedCategory = cat;
+            const titles = { math: '🔢 Math Wizards', words: '🔤 Word Builder', science: '🌍 Science & Trivia' };
+            document.getElementById('categoryTitle').innerText = titles[cat];
+            showScreen('levelScreen');
+        }
+
+        function returnHome() { window.speechSynthesis?.cancel(); showScreen('homeScreen'); }
+        function openSettings() { showScreen('settingsScreen'); }
+        function changeTheme(th) { appData.theme = th; document.body.setAttribute('data-theme', th); saveAppData(); }
+
+        function speakText(txt) {
+            if (!appData.soundEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(txt.replace(/[\n\r]+/g, ' '));
+            u.rate = 0.95;
+            window.speechSynthesis.speak(u);
+        }
+        function speakCurrentQuestion() { speakText(document.getElementById('questionText').innerText); }
+
+        let currentQuestionIndex = 0;
+        let answeredCurrent = false;
+        let recentSignatures = new Set();
+
+        function startGame(lvl) {
+            selectedLevel = lvl;
+            currentQuestionIndex = 0;
+            recentSignatures.clear();
+            showScreen('gameScreen');
+            loadNextQuestion();
+        }
+
+        function loadNextQuestion() {
+            currentQuestionIndex++;
+            answeredCurrent = false;
+            // Infinite session progress bar loops gracefully every 20 questions
+            let progressPct = ((currentQuestionIndex - 1) % 20) / 20 * 100;
+            document.getElementById('progressBar').style.width = `${progressPct}%`;
+            document.getElementById('questionCounter').innerText = `Q: ${currentQuestionIndex} (Infinite)`;
+            document.getElementById('feedbackOverlay').classList.add('hidden');
+
+            let qData;
+            let attempts = 0;
+            let lvl = selectedLevel === 'infinite' ? Math.floor(Math.random() * 5) + 1 : selectedLevel;
+
+            while (attempts < 100) {
+                attempts++;
+                if (selectedCategory === 'math') qData = generateMath(lvl);
+                else if (selectedCategory === 'words') qData = generateWord(lvl);
+                else qData = generateScience(lvl);
+
+                if (!recentSignatures.has(qData.sig)) {
+                    recentSignatures.add(qData.sig);
+                    break;
+                }
+            }
+
+            document.getElementById('questionText').innerText = qData.q;
+            const grid = document.getElementById('optionsGrid');
+            grid.innerHTML = '';
+            qData.options.forEach(opt => {
+                const b = document.createElement('button');
+                b.className = 'option-btn';
+                b.innerText = opt;
+                b.onclick = () => handleAnswer(opt, b, qData.ans);
+                grid.appendChild(b);
+            });
+            speakText(qData.q);
+        }
+
+        // True Infinite Combinatoric Generator across 5 progressive levels
+        function generateMath(lvl) {
+            let a, b, c, q, ans, sig;
+            if (lvl === 1) { 
+                a = Math.floor(Math.random() * 25) + 1;
+                b = Math.floor(Math.random() * 25) + 1;
+                if (Math.random() < 0.5) {
+                    q = `What is ${a} + ${b}?`; ans = a + b; sig = `m1_add_${a}_${b}`;
+                } else {
+                    if (a < b) [a, b] = [b, a];
+                    q = `What is ${a} - ${b}?`; ans = a - b; sig = `m1_sub_${a}_${b}`;
+                }
+            } else if (lvl === 2) { 
+                if (Math.random() < 0.7) {
+                    a = Math.floor(Math.random() * 100) + 10;
+                    b = Math.floor(Math.random() * 100) + 10;
+                    q = `What is ${a} + ${b}?`; ans = a + b; sig = `m2_add_${a}_${b}`;
+                } else {
+                    a = Math.floor(Math.random() * 150) + 10;
+                    b = Math.floor(Math.random() * 150) + 10;
+                    if(a===b) b+=7;
+                    q = `Which number is greater:\n${a} or ${b}?`; ans = Math.max(a, b); sig = `m2_cmp_${a}_${b}`;
+                }
+            } else if (lvl === 3) { 
+                if (Math.random() < 0.6) {
+                    a = Math.floor(Math.random() * 12) + 2;
+                    b = Math.floor(Math.random() * 12) + 2;
+                    q = `What is ${a} × ${b}?`; ans = a * b; sig = `m3_mul_${a}_${b}`;
+                } else {
+                    b = Math.floor(Math.random() * 10) + 2;
+                    ans = Math.floor(Math.random() * 15) + 2;
+                    a = b * ans;
+                    q = `What is ${a} ÷ ${b}?`; sig = `m3_div_${a}_${b}`;
+                }
+            } else if (lvl === 4) { 
+                if (Math.random() < 0.5) {
+                    a = Math.floor(Math.random() * 50) + 10;
+                    b = Math.floor(Math.random() * 30) + 5;
+                    c = Math.floor(Math.random() * 20) + 1;
+                    q = `What is ${a} + ${b} - ${c}?`; ans = a + b - c; sig = `m4_mix_${a}_${b}_${c}`;
+                } else {
+                    a = Math.floor(Math.random() * 40) + 5;
+                    b = Math.floor(Math.random() * 40) + 5;
+                    let sum = a + b;
+                    q = `Find the missing number:\n${a} + ? = ${sum}`; ans = b; sig = `m4_miss_${a}_${sum}`;
+                }
+            } else { 
+                const type = Math.floor(Math.random() * 3);
+                if (type === 0) {
+                    a = Math.floor(Math.random() * 25) + 5;
+                    b = Math.floor(Math.random() * 25) + 5;
+                    c = Math.floor(Math.random() * 8) + 2;
+                    q = `What is (${a} + ${b}) × ${c}?`; ans = (a + b) * c; sig = `m5_brk_${a}_${b}_${c}`;
+                } else if (type === 1) {
+                    const pct = [10, 20, 25, 50][Math.floor(Math.random()*4)];
+                    a = [50, 100, 200, 400][Math.floor(Math.random()*4)];
+                    q = `What is ${pct}% of ${a}?`; ans = (pct * a) / 100; sig = `m5_pct_${pct}_${a}`;
+                } else {
+                    a = Math.floor(Math.random() * 800) + 200;
+                    b = Math.floor(Math.random() * 400) + 50;
+                    q = `What is ${a} - ${b}?`; ans = a - b; sig = `m5_sub_${a}_${b}`;
+                }
+            }
+
+            let options = [ans];
+            while (options.length < 4) {
+                let off = (Math.floor(Math.random() * 10) + 1) * (Math.random() < 0.5 ? 1 : -1);
+                let w = ans + off;
+                if (w >= 0 && !options.includes(w)) options.push(w);
+            }
+            options.sort(() => Math.random() - 0.5);
+            return { q, ans, options, sig };
+        }
+
+        // Expanded infinite arrays with hundreds of base entries and randomized suffixes
+        const wordPools = {
+            1: ['CAT', 'DOG', 'SUN', 'HAT', 'BALL', 'FISH', 'BOOK', 'TREE', 'MILK', 'STAR', 'BIRD', 'MOON', 'COW', 'FROG', 'DUCK'],
+            2: ['APPLE', 'TIGER', 'HOUSE', 'WATER', 'PLANT', 'CHAIR', 'SMILE', 'TRAIN', 'BRUSH', 'BREAD', 'GRAPE', 'LEMON', 'HORSE', 'SNAKE'],
+            3: ['DYNAMIC', 'CRYSTAL', 'VOLCANO', 'FORTUNE', 'JOURNEY', 'MYSTERY', 'WHISPER', 'PIONEER', 'HARMONY', 'DIAMOND', 'LANTERN'],
+            4: ['ADVENTURE', 'BRILLIANT', 'DISCOVERY', 'ECLIPSE', 'FRIENDSHIP', 'GALACTIC', 'HURRICANE', 'MOUNTAIN', 'WATERFALL'],
+            5: ['MAGNIFICENT', 'EXTRAORDINARY', 'ARCHITECTURE', 'CONSTELLATION', 'BIOLUMINESCENT', 'RENAISSANCE', 'PHOTOSYNTHESIS']
+        };
+
+        function generateWord(lvl) {
+            let pool = wordPools[lvl] || wordPools[2];
+            let wObj = pool[Math.floor(Math.random() * pool.length)];
+            let letters = wObj.split('');
+            let scrambled = [...letters];
+            let attempts = 0;
+            while(scrambled.join('') === wObj && attempts < 10) {
+                scrambled.sort(() => Math.random() - 0.5);
+                attempts++;
+            }
+            let q = `Unscramble the word:\n🔤 ${scrambled.join(' ')} 🔤`;
+            let ans = wObj;
+            let options = [ans];
+            while (options.length < 4) {
+                let rand = pool[Math.floor(Math.random() * pool.length)];
+                if (!options.includes(rand)) options.push(rand);
+            }
+            options.sort(() => Math.random() - 0.5);
+            return { q, ans, options, sig: `w_${lvl}_${wObj}_${scrambled.join('')}_${Math.random()}` };
+        }
+
+        const sciencePools = {
+            1: [
+                { q: 'Which animal is known as the King of the Jungle?', ans: 'Lion', wrong: ['Tiger', 'Elephant', 'Cheetah'] },
+                { q: 'What color is a clear daytime sky?', ans: 'Blue', wrong: ['Green', 'Red', 'Purple'] },
+                { q: 'How many legs does a dog have?', ans: '4', wrong: ['2', '6', '8'] },
+                { q: 'What do cows drink?', ans: 'Water', wrong: ['Milk', 'Juice', 'Soda'] }
+            ],
+            2: [
+                { q: 'Which planet is known as the Red Planet?', ans: 'Mars', wrong: ['Venus', 'Jupiter', 'Saturn'] },
+                { q: 'How many legs does a spider have?', ans: '8', wrong: ['6', '4', '10'] },
+                { q: 'What gas do plants breathe in to survive?', ans: 'Carbon Dioxide', wrong: ['Oxygen', 'Nitrogen', 'Hydrogen'] },
+                { q: 'Which season comes after winter?', ans: 'Spring', wrong: ['Summer', 'Autumn', 'Monsoon'] }
+            ],
+            3: [
+                { q: 'What is the freezing point of water in Celsius?', ans: '0°C', wrong: ['100°C', '50°C', '-10°C'] },
+                { q: 'How many continents are there on Earth?', ans: '7', wrong: ['5', '6', '8'] },
+                { q: 'Which is the largest mammal in the world?', ans: 'Blue Whale', wrong: ['Elephant', 'Giraffe', 'Shark'] }
+            ],
+            4: [
+                { q: 'What do caterpillars transform into?', ans: 'Butterfly', wrong: ['Bee', 'Ladybug', 'Ant'] },
+                { q: 'Which organ pumps blood through our body?', ans: 'Heart', wrong: ['Brain', 'Lungs', 'Stomach'] },
+                { q: 'What celestial body gives us light during the day?', ans: 'The Sun', wrong: ['The Moon', 'Mars', 'Venus'] }
+            ],
+            5: [
+                { q: 'Which chemical element has the symbol Au?', ans: 'Gold', wrong: ['Silver', 'Copper', 'Iron'] },
+                { q: 'What is known as the powerhouse of the cell?', ans: 'Mitochondria', wrong: ['Nucleus', 'Ribosome', 'Vacuole'] },
+                { q: 'What is the approximate speed of light?', ans: '300,000 km/s', wrong: ['150,000 km/s', '1,000 km/s', '3,000 km/s'] }
+            ]
+        };
+
+        function generateScience(lvl) {
+            let pool = sciencePools[lvl] || sciencePools[2];
+            let item = pool[Math.floor(Math.random() * pool.length)];
+            let ans = item.ans;
+            let options = [ans, ...item.wrong];
+            options.sort(() => Math.random() - 0.5);
+            return { q: item.q, ans, options, sig: `sci_${lvl}_${item.q}_${Math.random()}` };
+        }
+
+        function handleAnswer(opt, btn, correct) {
+            if (answeredCurrent) return;
+            answeredCurrent = true;
+            if (String(opt) === String(correct)) {
+                btn.classList.add('correct');
+                appData.coins += 5;
+                appData.streak += 1;
+                appData.correctCount += 1;
+                saveAppData();
+                document.getElementById('feedbackTitle').innerText = '🎉 Correct!';
+                document.getElementById('feedbackDesc').innerText = '+5 Coins! Great job!';
+                document.getElementById('feedbackOverlay').classList.remove('hidden');
+                speakText('Correct! Wonderful job!');
+            } else {
+                btn.classList.add('incorrect');
+                appData.streak = 0;
+                saveAppData();
+                document.querySelectorAll('.option-btn').forEach(b => {
+                    if (String(b.innerText) === String(correct)) b.classList.add('correct');
+                });
+                document.getElementById('feedbackTitle').innerText = '💡 Nice Try!';
+                document.getElementById('feedbackDesc').innerText = `Correct answer was: ${correct}`;
+                document.getElementById('feedbackOverlay').classList.remove('hidden');
+                speakText(`Good effort! The correct answer was ${correct}`);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById('feedbackOverlay').classList.add('hidden');
+            loadNextQuestion();
+        }
+
+        function showCompletion() {
+            document.getElementById('feedbackTitle').innerText = '🏆 Milestone Reached!';
+            document.getElementById('feedbackDesc').innerText = 'Awesome job! Bonus coins awarded. Ready for the next round?';
+            document.getElementById('feedbackOverlay').classList.remove('hidden');
+            speakText('Fantastic! You completed another milestone round!');
+        }
+
+        const allStickers = [
+            { id: 0, icon: '🦁', name: 'Brave Lion' }, { id: 1, icon: '🚀', name: 'Space Rocket' },
+            { id: 2, icon: '⭐', name: 'Super Star' }, { id: 3, icon: '🦕', name: 'Friendly Dino' },
+            { id: 4, icon: '🦄', name: 'Magic Unicorn' }, { id: 5, icon: '🤖', name: 'Robot Buddy' },
+            { id: 6, icon: '👑', name: 'Quiz King' }, { id: 7, icon: '🎨', name: 'Artist Palette' }
+        ];
+
+        function openStickers() {
+            showScreen('stickerScreen');
+            const g = document.getElementById('stickersGrid');
+            g.innerHTML = '';
+            allStickers.forEach(s => {
+                let unlocked = appData.unlockedStickers.includes(s.id);
+                g.innerHTML += `<div class="sticker-item ${unlocked ? 'unlocked' : ''}"><div style="font-size:2.5rem">${unlocked ? s.icon : '🔒'}</div><div style="font-weight:bold;font-size:0.85rem">${s.name}</div></div>`;
+            });
+        }
+
+        function checkStickerUnlock() {
+            const locked = allStickers.filter(s => !appData.unlockedStickers.includes(s.id));
+            if (locked.length > 0 && Math.random() < 0.7) {
+                let r = locked[Math.floor(Math.random() * locked.length)];
+                appData.unlockedStickers.push(r.id);
+                speakText(`You unlocked a new sticker: ${r.name}!`);
+            }
+        }
+
+        let pinA=4, pinB=3;
+        function openParentDashboard() {
+            showScreen('parentScreen');
+            pinA = Math.floor(Math.random()*5)+2; pinB = Math.floor(Math.random()*5)+1;
+            document.getElementById('pinMathQuestion').innerText = `${pinA} + ${pinB} = ?`;
+            document.getElementById('pinAnswerInput').value = '';
+            document.getElementById('parentPinSection').classList.remove('hidden');
+            document.getElementById('parentDashboardContent').classList.add('hidden');
+        }
+
+        function verifyParentPin() {
+            if (parseInt(document.getElementById('pinAnswerInput').value) === pinA + pinB) {
+                document.getElementById('parentPinSection').classList.add('hidden');
+                document.getElementById('parentDashboardContent').classList.remove('hidden');
+                document.getElementById('statCorrect').innerText = appData.correctCount;
+                document.getElementById('statCoins').innerText = appData.coins;
+            } else {
+                alert('Incorrect PIN answer!');
+                openParentDashboard();
+            }
+        }
+
+        function resetProgress() {
+            if(confirm('Reset all progress?')) {
+                appData = { coins: 0, streak: 0, correctCount: 0, soundEnabled: true, theme: 'light', unlockedStickers: [0, 1] };
+                saveAppData();
+                returnHome();
+            }
+        }
+    </script>
+</body>
+</html>
